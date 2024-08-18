@@ -63,7 +63,10 @@ const GoogleSheetDataToJson: React.FC = () => {
                 const response = await axios.get<GoogleSheetResponse>(
                     `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tq=${encodeURIComponent(QUERY)}&sheet=${SHEET_NAME}&key=${GOOGLE_SHEETS_API_KEY}`
                 );
-
+                if (response.status !== 200) {
+                    alert('Error fetching data from Google Sheets' + response.status);
+                    return;
+                }
                 const data = response.data as any;
                 const jsonData = JSON.parse(data.substring(47).slice(0, -2));
                 const rows = jsonData.table.rows.map((row: any) =>
