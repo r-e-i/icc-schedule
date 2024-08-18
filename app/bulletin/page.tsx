@@ -22,8 +22,8 @@ const SHEET_NAME = 'SCHEDULES'; // Name of the sheet
 const SHEET_RANGE = `${SHEET_NAME}!A1:AF200`; // Specify the range you're interested in
 const QUERY = "SELECT * WHERE A = date '2024-08-18'"; // SQL query to get data from Google Sheets  A >= date '2024-08-10' AND A <= date '2024-08-20'
 
-const queryParams = new URLSearchParams(window.location.search);
-const queryDate = queryParams.get('date');
+const queryParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+const queryDate = queryParams?.get('date');
 var thisSunday = queryDate ? new Date(queryDate) : new Date();
 if (thisSunday.getDay() != 0) {
     thisSunday.setDate(thisSunday.getDate() + (7 - thisSunday.getDay()));
