@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@media print {
+    .page {
+      orientation: landscape;
+      /* Set the height of each page to letter size: 11 inches */
+      height: 8in;
+      /* Ensure that the page takes up the full width for letter size */
+      width: 11in;
+      /* Avoid breaking inside this element */
+      page-break-inside: avoid;
+      /* Add a page break after each element */
+      page-break-after: always;
+    }
+  }

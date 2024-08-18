@@ -1,6 +1,18 @@
 import './globals.css';
 
 import { GeistSans } from 'geist/font/sans';
+import { Nunito_Sans} from 'next/font/google';
+import { Open_Sans } from 'next/font/google';
+
+const nunitoSans = Nunito_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+})
+
+const openSans = Open_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 let title = 'Next.js + Postgres Auth Starter';
 let description =
@@ -24,7 +36,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={GeistSans.variable}>{children}</body>
+      <body className={nunitoSans.className}>{children}
+      </body>
     </html>
   );
 }
