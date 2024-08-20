@@ -20,7 +20,8 @@ const CACHE_DURATION = 1000 * 60 * 10; // Cache duration: 10 minutes
 
 export async function GET() {
   const currentTime = new Date().getTime();
-
+  console.log(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_SHEETS_API_KEY}`);
+  
   if (cachedData && (currentTime - lastFetchTime) < CACHE_DURATION) {
     console.log('Returning cached data');
     return new Response(JSON.stringify(cachedData), { status: 200 });
