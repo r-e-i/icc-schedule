@@ -14,7 +14,7 @@ const openSans = Open_Sans({
   display: 'swap',
 })
 
-let title = 'Next.js + Postgres Auth Starter';
+let title = 'Immanuel Community Church Bulletin';
 let description =
   'This is a Next.js starter kit that uses NextAuth.js for simple email + password login and a Postgres database to persist the data.';
 
