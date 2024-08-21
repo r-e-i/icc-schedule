@@ -8,10 +8,6 @@ interface GoogleSheetResponse {
 interface SheetRow {
     [key: string]: string;
 }
-const GOOGLE_SHEETS_API_KEY = process.env.GOOGLE_API_KEY; // Your Google Sheets API key
-const SHEET_ID = '1UKdbu_cJuVVep7xZRWsBwLZqHoYQh_baH69Y-izttBE'; // Google Sheet ID from the URL
-const SHEET_NAME = 'SCHEDULES'; // Name of the sheet
-const SHEET_RANGE = `${SHEET_NAME}!A1:AF200`; // Specify the range you're interested in
 
 let cachedData: any = null;
 let lastFetchTime = 0;
@@ -19,9 +15,14 @@ let lastFetchTime = 0;
 const CACHE_DURATION = 1000 * 60 * 10; // Cache duration: 10 minutes
 
 export async function GET() {
+  const GOOGLE_SHEETS_API_KEY = process.env.GOOGLE_API_KEY; // Your Google Sheets API key
+  const SHEET_ID = '1UKdbu_cJuVVep7xZRWsBwLZqHoYQh_baH69Y-izttBE'; // Google Sheet ID from the URL
+  const SHEET_NAME = 'SCHEDULES'; // Name of the sheet
+  const SHEET_RANGE = `${SHEET_NAME}!A1:AF200`; // Specify the range you're interested in
+
   const currentTime = new Date().getTime();
   console.log(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_SHEETS_API_KEY}`);
-  
+
   if (cachedData && (currentTime - lastFetchTime) < CACHE_DURATION) {
     console.log('Returning cached data');
     return new Response(JSON.stringify(cachedData), { status: 200 });
