@@ -10,33 +10,33 @@ interface SheetRow {
     [key: string]: string;
 }
 
-
 const formatDate = (date: Date, length: "long" | "short" = "short"): string => {
     return date.toLocaleDateString('en-US', { weekday: length, month: length, day: 'numeric', year: 'numeric' });
 };
 
 
-const queryParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
-const queryDate = queryParams?.get('date');
-var thisSunday = queryDate ? new Date(queryDate) : new Date();
-if (thisSunday.getDay() != 0) {
-    thisSunday.setDate(thisSunday.getDate() + (7 - thisSunday.getDay()));
-}
-
-const Activities = [ 
-    { "title": "ENGLISH BIBLE STUDY", "date": new Date(thisSunday.getTime() + 4 * 24 * 60 * 60 * 1000) },
-    { "title": "INDONESIAN BIBLE STUDY", "date": new Date(thisSunday.getTime() + 5 * 24 * 60 * 60 * 1000) },
-]
-
-const nextSunday = new Date(thisSunday.getTime() + 7 * 24 * 60 * 60 * 1000);
-const SundayDate = formatDate(thisSunday);
-const NextSundayDate = formatDate(nextSunday);
-
 const Roles = ["INDONESIAN_SPEAKER", "ENGLISH_SPEAKER", "LITURGIST", "USHER", "SUNDAY_SCHOOL", "OHP", "SOUND_SYSTEM", "TRANSLATOR", "LUNCH", "CARETAKER"];
 
 const Bulletin: React.FC = () => {
+    const queryParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const contentToPrint = useRef(null);
+    const queryDate = queryParams?.get('date');
     const [jsonData, setJsonData] = useState<SheetRow[]>([]);
+
+    const [thisSunday, setThisSunday] = useState<Date>(queryDate ? new Date(queryDate) : new Date());
+
+    if (thisSunday.getDay() != 0) {
+        thisSunday.setDate(thisSunday.getDate() + (7 - thisSunday.getDay()));
+    }
+    
+    const Activities = [ 
+        { "title": "ENGLISH BIBLE STUDY", "date": new Date(thisSunday.getTime() + 4 * 24 * 60 * 60 * 1000) },
+        { "title": "INDONESIAN BIBLE STUDY", "date": new Date(thisSunday.getTime() + 5 * 24 * 60 * 60 * 1000) },
+    ]
+
+    const nextSunday = new Date(thisSunday.getTime() + 7 * 24 * 60 * 60 * 1000);
+const SundayDate = formatDate(thisSunday);
+const NextSundayDate = formatDate(nextSunday);
 
     const handlePrint = useReactToPrint({
         documentTitle: "ICC Bulletin",
@@ -77,14 +77,16 @@ const Bulletin: React.FC = () => {
     if (!jsonData || !CurrentSundaySchedule) return <div>Loading from Google Sheet Schedule ...</div>;
     return (
             <div ref={contentToPrint} className="p-4">
+                <div className="flex font-bold items-center space-x-2">
                     <button className="bg-gray-500 text-white rounded-lg p-1 m-2 font-bold" onClick={() => {
                     if (typeof window !== 'undefined') {
                         window.location.href = "./bulletin/print?date=" + thisSunday.toISOString();
                     }
                 }}>
-                    VIEW PRINTED VERSION
+                    VIEW BULLETIN
                 </button>
-
+                DATE <input className="w-[120px] bg-gray-500 text-white rounded-lg items-center font-bold" type="date" name="date" onChange={e => setThisSunday(new Date(e.target.value))}/>
+                </div>
                         <div className="w-full bg-yellow-800 text-white object-cover z-10 rounded-lg m-1 ">
                             <div className='text-center text-xl tracking-widest bg-white/50 font-bold'>  IMMANUEL COMMUNITY CHURCH OF FRESNO SCHEDULE | Sunday, {thisSunday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
                         </div>
