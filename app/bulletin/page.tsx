@@ -30,8 +30,8 @@ const Bulletin: React.FC = () => {
     }
     
     const Activities = [ 
-        { "title": "ENGLISH BIBLE STUDY", "date": new Date(thisSunday.getTime() + 4 * 24 * 60 * 60 * 1000) },
-        { "title": "INDONESIAN BIBLE STUDY", "date": new Date(thisSunday.getTime() + 5 * 24 * 60 * 60 * 1000) },
+        { "title": "ENGLISH BIBLE STUDY", "date": new Date(thisSunday.getTime() + (4-7) * 24 * 60 * 60 * 1000) },
+        { "title": "INDONESIAN BIBLE STUDY", "date": new Date(thisSunday.getTime() + (5-7) * 24 * 60 * 60 * 1000) },
     ]
 
     const nextSunday = new Date(thisSunday.getTime() + 7 * 24 * 60 * 60 * 1000);

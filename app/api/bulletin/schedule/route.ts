@@ -1,5 +1,6 @@
 // app/api/data/route.js
 import axios from 'axios';
+export const dynamic = "force-dynamic";
 
 interface GoogleSheetResponse {
     values: string[][];
