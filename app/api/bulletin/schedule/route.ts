@@ -1,5 +1,6 @@
 // app/api/data/route.js
 import axios from 'axios';
+import { NextRequest } from 'next/server';
 export const dynamic = "force-dynamic";
 
 interface GoogleSheetResponse {
@@ -15,7 +16,10 @@ let lastFetchTime = 0;
 
 const CACHE_DURATION = 1000 * 60 * 10; // Cache duration: 10 minutes
 
-export async function GET() {
+export async function GET(request: NextRequest) { 
+  const {searchParams} = new URL(request.url);
+  const name = searchParams.get("name");
+
   const GOOGLE_SHEETS_API_KEY = process.env.GOOGLE_API_KEY; // Your Google Sheets API key
   const SHEET_ID = '1UKdbu_cJuVVep7xZRWsBwLZqHoYQh_baH69Y-izttBE'; // Google Sheet ID from the URL
   const SHEET_NAME = 'SCHEDULES'; // Name of the sheet
