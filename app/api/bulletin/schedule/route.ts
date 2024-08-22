@@ -1,5 +1,3 @@
-// app/api/data/route.js
-
 import { NextRequest } from 'next/server';
 export const dynamic = "force-dynamic";
 
@@ -23,10 +21,10 @@ export async function GET(request: NextRequest) {
   const GOOGLE_SHEETS_API_KEY = process.env.GOOGLE_API_KEY; // Your Google Sheets API key
   const SHEET_ID = '1UKdbu_cJuVVep7xZRWsBwLZqHoYQh_baH69Y-izttBE'; // Google Sheet ID from the URL
   const SHEET_NAME = 'SCHEDULES'; // Name of the sheet
-  const SHEET_RANGE = `${SHEET_NAME}!A1:AF200`; // Specify the range you're interested in
+  const SHEET_RANGE = `${SHEET_NAME}!B1:BF200`; // Specify the range you're interested in
 
   const currentTime = new Date().getTime();
-  console.log(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_SHEETS_API_KEY}`);
+  //console.log(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_SHEETS_API_KEY}`);
 
   if (cachedData && (currentTime - lastFetchTime) < CACHE_DURATION) {
     console.log('Returning cached data');
@@ -38,10 +36,7 @@ export async function GET(request: NextRequest) {
     const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_SHEETS_API_KEY}`, { next: { revalidate: 10 } });
     const data = await response.json();    const rows = data.values;
     const cachedData = convertToJSON(rows);
-    
-    // const rows = response.data.values;
-    // const cachedData = convertToJSON(rows);
-
+    cachedData.filter(row => row.DATE.length > 0);
     lastFetchTime = currentTime;
     return new Response(JSON.stringify(cachedData), { status: 200 });
   } catch (error) {
