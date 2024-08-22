@@ -5,10 +5,7 @@ import axios from 'axios';
 import { useReactToPrint } from 'react-to-print';
 import { useRef } from 'react';
 
-// Define types
-interface SheetRow {
-    [key: string]: string;
-}
+import { SheetRow } from '@/app/lib/types';
 
 
 const formatDate = (date: Date, length: "long" | "short" = "short"): string => {

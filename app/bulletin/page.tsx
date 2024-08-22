@@ -4,17 +4,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useReactToPrint } from 'react-to-print';
 import { useRef } from 'react';
-
-// Define types
-interface SheetRow {
-    [key: string]: string;
-}
-
-const formatDate = (date: Date, length: "long" | "short" = "short"): string => {
-    return date.toLocaleDateString('en-US', { weekday: length, month: length, day: 'numeric', year: 'numeric' });
-};
-
-
+import { SheetRow } from '@/app/lib/types';
+import ListRoles from './components/listRoles';
+import Title from './components/Title';
+import { formatDate } from './components/utils';
+import Activities from './components/Activities';
 const Roles = ["INDONESIAN_SPEAKER", "ENGLISH_SPEAKER", "LITURGIST", "USHER", "SUNDAY_SCHOOL", "OHP", "SOUND_SYSTEM", "TRANSLATOR", "LUNCH", "CARETAKER"];
 
 const Bulletin: React.FC = () => {
@@ -22,39 +16,38 @@ const Bulletin: React.FC = () => {
     const contentToPrint = useRef(null);
     const queryDate = queryParams?.get('date');
     const [jsonData, setJsonData] = useState<SheetRow[]>([]);
-
     const [thisSunday, setThisSunday] = useState<Date>(queryDate ? new Date(queryDate) : new Date());
-
-    if (thisSunday.getDay() != 0) {
-        thisSunday.setDate(thisSunday.getDate() + (7 - thisSunday.getDay()));
-    }
-    
-    const Activities = [ 
-        { "title": "ENGLISH BIBLE STUDY", "date": new Date(thisSunday.getTime() + (4-7) * 24 * 60 * 60 * 1000) },
-        { "title": "INDONESIAN BIBLE STUDY", "date": new Date(thisSunday.getTime() + (5-7) * 24 * 60 * 60 * 1000) },
-    ]
-
-    const nextSunday = new Date(thisSunday.getTime() + 7 * 24 * 60 * 60 * 1000);
-const SundayDate = formatDate(thisSunday);
-const NextSundayDate = formatDate(nextSunday);
-
-    const handlePrint = useReactToPrint({
-        documentTitle: "ICC Bulletin",
-        removeAfterPrint: true,
-    });
-    // Function to filter data by DATE field
-    const filterDataByDate = (data: SheetRow[], date: string): SheetRow => {
-        return data.filter(row => row.DATE == date)[0];
-    };
 
     useEffect(() => {
         console.log("Fetching data from Google Sheet Schedule ...");
         axios.get('/api/bulletin/schedule').then(res => setJsonData(res.data)).catch(err => { alert(err); console.error(err);});
     }, []);
 
+    if (thisSunday.getDay() != 0) {
+        thisSunday.setDate(thisSunday.getDate() + (7 - thisSunday.getDay()));
+    }
+    
+    const lastMonday = new Date(thisSunday.getTime() - 6 * 24 * 60 * 60 * 1000);
+    const nextSunday = new Date(thisSunday.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const SundayDate = formatDate(thisSunday);
+    const NextSundayDate = formatDate(nextSunday);
+
+    // Function to filter data by DATE field
+    const filterDataByDate = (data: SheetRow[], date: string): SheetRow => {
+        return data.filter(row => row.DATE == date)[0];
+    };
+    const filterDataByDateRange = (data: SheetRow[], startDate: Date, endDate: Date): SheetRow[] => {
+        return data.filter(row => 
+        { var cDate = new Date(row.DATE); 
+            return (cDate >= new Date(startDate) && cDate < new Date(endDate.getTime() - 24 * 60 * 60 * 1000)); 
+        });
+    }
+
+
     const CurrentSundaySchedule = filterDataByDate(jsonData, SundayDate);
     const NextSundaySchedule = filterDataByDate(jsonData, NextSundayDate);
-
+    const ActivitiesSchedule = filterDataByDateRange(jsonData, lastMonday, thisSunday);
+    const ActivitiesScheduleNextWeek = filterDataByDateRange(jsonData, thisSunday, nextSunday);
     const wT = (title: string, text: string) => {
         if (title) return (
             <div className="text-center text-sm">
@@ -85,39 +78,20 @@ const NextSundayDate = formatDate(nextSunday);
                 }}>
                     VIEW BULLETIN
                 </button>
-                DATE <input className="w-[120px] bg-gray-500 text-white rounded-lg items-center font-bold" type="date" name="date" onChange={e => setThisSunday(new Date(e.target.value))}/>
+                DATE <input className="w-[120px] bg-gray-500 text-white rounded-lg items-center font-bold" type="date" name="date" defaultValue={thisSunday.toLocaleDateString()}  onChange={e => setThisSunday(new Date(e.target.value))}/>
                 </div>
-                        <div className="w-full bg-yellow-800 text-white object-cover z-10 rounded-lg m-1 ">
-                            <div className='text-center text-xl tracking-widest bg-white/50 font-bold'>  IMMANUEL COMMUNITY CHURCH OF FRESNO SCHEDULE | Sunday, {thisSunday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
-                        </div>
 
+                        <Title><b>IMMANUEL COMMUNITY CHURCH OF FRESNO SCHEDULE </b><br/> {formatDate(lastMonday,"long")} - {formatDate(nextSunday,"long")} </Title>
+                        <Title><div>ACTIVITIES</div></Title>
                         <table className="w-full mx-3 mt-2">
-
                             <tbody>
-                                <tr>
-                                    <td className="text-sm w-1/3">THEMA KHOTBAH / SERMON TITLE</td>
-                                    <td className="text-sm font-bold">{CurrentSundaySchedule["SERMON_TITLE_IND"]}<br/>{CurrentSundaySchedule["SERMON_TITLE_ENG"]}</td>
-                                </tr>
-                                <tr>
-                                    <td className="text-sm w-1/3">PEMBACAAN AKITAB / BIBLE READING</td>
-                                    <td className="text-sm font-bold">{CurrentSundaySchedule["VERSE"]} </td>
-                                </tr>
-                                <tr>
-                                    <td className="text-sm w-1/3">CALL TO WORSHIP</td>
-                                    <td className="text-sm font-bold">{CurrentSundaySchedule["WORSHIP_VERSE"]} {CurrentSundaySchedule["WORSHIP_VERSE_TEXT"]}</td>
-                                </tr>
+                                <Activities schedule={ActivitiesSchedule} />
                             </tbody>
                         </table>
-
-
+                        <Title><div>SUNDAY SERVICE {formatDate(thisSunday,"long")}</div></Title>
                         <table className="w-full mx-3 mt-2">
                             <tbody>
-                                {Roles.map((key) => (
-                                    <tr key={key}>
-                                        <td className="text-sm w-1/3">{key.replace("_", " ")}</td>
-                                        <td className="text-sm font-bold">{key == "CARETAKER" ? CurrentSundaySchedule["CARETAKER1"] + " & " + CurrentSundaySchedule["CARETAKER2"] : CurrentSundaySchedule[key]}</td>
-                                    </tr>
-                                ))}
+                                <ListRoles Roles={Roles} Schedule={CurrentSundaySchedule} />
                             </tbody>
                         </table>
                         <div className="w-full bg-yellow-800 text-white object-cover z-10 rounded-lg m-1 ">
@@ -125,32 +99,14 @@ const NextSundayDate = formatDate(nextSunday);
                         </div>
                         <table className="w-full mx-3 mt-2">
                             <tbody>
-                                {Activities.map(function({title,date}) {
-                                var activity = filterDataByDate(jsonData, date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }));
-                                return (
-                                    <tr key={title}>
-                                        <td className="text-sm w-1/3  align-top">{title}</td>
-                                        <td className="text-sm align-top "><b>{formatDate(date,"long")} at {activity["TIME"]} </b>
-                                        <br />at <b>{activity["LOCATION"]} </b> by <b>{activity["ENGLISH_SPEAKER"]}{activity["INDONESIAN_SPEAKER"]}</b>
-
-                                        </td>
-                                    </tr> );
-                                }
-                                
-                                )}
+                                <Activities schedule={ActivitiesScheduleNextWeek} />
                             </tbody>
                         </table>
-                        <div className="w-full bg-yellow-900 text-white object-cover z-10 rounded-lg m-1 ">
-                            <div className='text-center text-lg tracking-widest bg-white bg-opacity-30'>  <b> NEXT WEEK </b> | <small>{nextSunday.toLocaleDateString('en-US', { weekday:'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()} at 10:30 AM</small></div>
-                        </div>
-                        <table className="w-full mx-3 mt-2">
+<Title> <b> NEXT WEEK </b> | <small>{nextSunday.toLocaleDateString('en-US', { weekday:'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()} at 10:30 AM</small>
+</Title> 
+                       <table className="w-full mx-3 mt-2">
                             <tbody>
-                                {Roles.map((key) => (
-                                    <tr key={key}>
-                                        <td className="text-sm w-1/3">{key.replace("_", " ")}</td>
-                                        <td className="text-sm font-bold">{key == "CARETAKER" ? NextSundaySchedule["CARETAKER1"] + " & " + NextSundaySchedule["CARETAKER2"] : NextSundaySchedule[key]}</td>
-                                    </tr>
-                                ))}
+                                <ListRoles Roles={Roles} Schedule={NextSundaySchedule} />
                             </tbody>
                         </table>
                         <div className="w-full bg-yellow-900 text-white object-cover z-10 rounded-lg m-1 ">

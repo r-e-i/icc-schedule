@@ -1,5 +1,5 @@
 // app/api/data/route.js
-import axios from 'axios';
+
 import { NextRequest } from 'next/server';
 export const dynamic = "force-dynamic";
 
@@ -35,12 +35,12 @@ export async function GET(request: NextRequest) {
 
   try {
     console.log('Fetching new data at', new Date().toLocaleTimeString());
-    const response = await axios.get<GoogleSheetResponse>(
-        `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_SHEETS_API_KEY}`
-    );
-
-    const rows = response.data.values;
+    const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_SHEETS_API_KEY}`, { next: { revalidate: 10 } });
+    const data = await response.json();    const rows = data.values;
     const cachedData = convertToJSON(rows);
+    
+    // const rows = response.data.values;
+    // const cachedData = convertToJSON(rows);
 
     lastFetchTime = currentTime;
     return new Response(JSON.stringify(cachedData), { status: 200 });
