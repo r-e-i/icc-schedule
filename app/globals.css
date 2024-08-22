@@ -12,6 +12,6 @@
       /* Avoid breaking inside this element */
       page-break-inside: avoid;
       /* Add a page break after each element */
-      page-break-after: always;
+      page-break-after: auto;
     }
   }

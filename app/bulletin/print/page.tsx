@@ -47,6 +47,9 @@ const Bulletin: React.FC = () => {
     useEffect(() => {
         console.log("Fetching data from Google Sheet Schedule ...");
         axios.get('/api/bulletin/schedule').then(res => setJsonData(res.data)).catch(err => { alert(err); console.error(err);});
+        setTimeout(() => {
+            window.print();
+        }, 2000);
     }, []);
 
     const CurrentSundaySchedule = filterDataByDate(jsonData, SundayDate);

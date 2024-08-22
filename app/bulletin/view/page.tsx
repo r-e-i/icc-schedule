@@ -77,7 +77,7 @@ const Bulletin: React.FC = () => {
             {/* <!-- Page 1 --> */}
                 <div className="page bg-white border-white  mx-auto p-3 flex overflow-hidden">
 
-                    <div className="w-1/2 p-1">
+                    <div className="w-full p-1">
                         <h1 className='text-lg font-bold text-center'>{thisSunday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</h1>
                         <div className="flex justify-center -mt-6 -mb-10">
                             <img className="h-[220px] object-cover z-20 " src="/images/Welcome ICC.png" alt="random" />
@@ -105,7 +105,8 @@ const Bulletin: React.FC = () => {
 
 
                     </div>
-                </div>                    <div className="w-1/2 border-r-2 p-1">
+                </div>                    
+                <div className="w-full border-r-2 p-1">
                         <div className="flex justify-center">
                             <img className="h-[70px] object-cover -mb-1" src="/images/Worship.png" />
                         </div>
@@ -151,7 +152,7 @@ const Bulletin: React.FC = () => {
 
 
                     {/* Second Column */}
-                    <div className="w-1/2 p-1">
+                    <div className="w-full p-1">
                         <div className="w-full bg-yellow-700 text-white object-cover z-10 rounded-lg m-1 ">
                             <div className='text-center text-lg tracking-widest bg-white bg-opacity-30'>  <b> TODAY&apos;S SERVICE </b> | <small>{thisSunday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()} at 10:30 AM</small></div>
                         </div>
@@ -199,7 +200,7 @@ const Bulletin: React.FC = () => {
                             </tbody>
                         </table>
                     </div> 
-                    <div className="w-1/2 border-r-2 p-1">
+                    <div className="w-full border-r-2 p-1">
                         <img src="/images/SermonNotes.png" className="h-[50px] object-cover" />
                         {Array.from({ length: 13 }).map((_, index) => (
                             <div key={index} className="w-full h-10 p-3">
