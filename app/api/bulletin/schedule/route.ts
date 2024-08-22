@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   const SHEET_RANGE = `${SHEET_NAME}!B1:BF200`; // Specify the range you're interested in
 
   const currentTime = new Date().getTime();
-  //console.log(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_SHEETS_API_KEY}`);
+  console.log(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_SHEETS_API_KEY}`);
 
   if (cachedData && (currentTime - lastFetchTime) < CACHE_DURATION) {
     console.log('Returning cached data');
