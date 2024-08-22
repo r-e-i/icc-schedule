@@ -71,14 +71,23 @@ const Bulletin: React.FC = () => {
     return (
             <div ref={contentToPrint} className="p-4">
                 <div className="flex font-bold items-center space-x-2">
-                    <button className="bg-gray-500 text-white rounded-lg p-1 m-2 font-bold" onClick={() => {
+                    <button className="bg-gray-500 text-white rounded-lg p-2 m-1 font-bold drop-shadow-lg hover:bg-red-900" onClick={() => {
                     if (typeof window !== 'undefined') {
-                        window.location.href = "./bulletin/print?date=" + thisSunday.toISOString();
+                        window.location.href = "./bulletin/view?date=" + thisSunday.toISOString();
                     }
                 }}>
                     VIEW BULLETIN
                 </button>
-                DATE <input className="w-[120px] bg-gray-500 text-white rounded-lg items-center font-bold" type="date" name="date" defaultValue={thisSunday.toLocaleDateString()}  onChange={e => setThisSunday(new Date(e.target.value))}/>
+                <button className="bg-gray-500 text-white rounded-lg p-2 m-1 font-bold drop-shadow-lg hover:bg-red-900" onClick={() => {
+                    if (typeof window !== 'undefined') {
+                        window.location.href = "./bulletin/print?date=" + thisSunday.toISOString();
+                    }
+                }}>
+                    PRINT BULLETIN
+                </button>
+                <div className=' bg-gray-500  text-white rounded-lg p-1.5 m-2 font-bold '>
+                DATE <input className="w-[120px] text-black rounded-lg items-center font-bold" type="date" name="date" defaultValue={thisSunday.toLocaleDateString()}  onChange={e => setThisSunday(new Date(e.target.value))}/>
+                </div>
                 </div>
 
                         <Title><b>IMMANUEL COMMUNITY CHURCH OF FRESNO SCHEDULE </b><br/> {formatDate(lastMonday,"long")} - {formatDate(nextSunday,"long")} </Title>
