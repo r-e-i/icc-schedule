@@ -4,89 +4,62 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useReactToPrint } from 'react-to-print';
 import { useRef } from 'react';
-
 import { SheetRow } from '@/app/lib/types';
-
-
-const formatDate = (date: Date, length: "long" | "short" = "short"): string => {
-    return date.toLocaleDateString('en-US', { weekday: length, month: length, day: 'numeric', year: 'numeric' });
-};
-
-
-const queryParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
-const queryDate = queryParams?.get('date');
-var thisSunday = queryDate ? new Date(queryDate) : new Date();
-if (thisSunday.getDay() != 0) {
-    thisSunday.setDate(thisSunday.getDate() + (7 - thisSunday.getDay()));
-}
-
-const Activities = [ 
-    { "title": "ENGLISH BIBLE STUDY", "date": new Date(thisSunday.getTime() + 4 * 24 * 60 * 60 * 1000) },
-    { "title": "INDONESIAN BIBLE STUDY", "date": new Date(thisSunday.getTime() + 5 * 24 * 60 * 60 * 1000) },
-]
-
-const nextSunday = new Date(thisSunday.getTime() + 7 * 24 * 60 * 60 * 1000);
-const SundayDate = formatDate(thisSunday);
-const NextSundayDate = formatDate(nextSunday);
-
-const Roles = ["INDONESIAN_SPEAKER", "ENGLISH_SPEAKER", "LITURGIST", "USHER", "SUNDAY_SCHOOL", "OHP", "SOUND_SYSTEM", "TRANSLATOR", "LUNCH", "CARETAKER"];
+import ListRoles from '../components/listRoles';
+import Title from '../components/Title';
+import { formatDate, filterDataByDate, filterDataByDateRange, wT } from '../components/utils';
+import Activities from '../components/Activities';
+import {Roles, RolesTitle, AnnouncementSplit} from '../config';
+import Announcement, { checkNumberOfAnnouncements } from '../components/Announcements';
 
 const Bulletin: React.FC = () => {
-    const contentToPrint = useRef(null);
+    const queryParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const queryDate = queryParams?.get('date');
     const [jsonData, setJsonData] = useState<SheetRow[]>([]);
-
-    const handlePrint = useReactToPrint({
-        documentTitle: "ICC Bulletin",
-        removeAfterPrint: true,
-    });
-    // Function to filter data by DATE field
-    const filterDataByDate = (data: SheetRow[], date: string): SheetRow => {
-        return data.filter(row => row.DATE == date)[0];
-    };
-
+    const [thisSunday, setThisSunday] = useState<Date>(queryDate ? new Date(queryDate) : new Date());
+//Fetch Data
     useEffect(() => {
         console.log("Fetching data from Google Sheet Schedule ...");
         axios.get('/api/bulletin/schedule').then(res => setJsonData(res.data)).catch(err => { alert(err); console.error(err);});
-        setTimeout(() => {
-            window.print();
-        }, 2000);
-    }, []);
-
+        setTimeout(() => { window.print();   }, 2000);
+        }, []);
+//Set to this Sunday
+    if (thisSunday.getDay() != 0) {
+        thisSunday.setDate(thisSunday.getDate() + (7 - thisSunday.getDay()));
+    }
+//Dates
+       const nextSunday = new Date(thisSunday.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const SundayDate = formatDate(thisSunday);
+    const NextSundayDate = formatDate(nextSunday);
+//SCHEDULES
     const CurrentSundaySchedule = filterDataByDate(jsonData, SundayDate);
     const NextSundaySchedule = filterDataByDate(jsonData, NextSundayDate);
-
-    const wT = (title: string, text: string) => {
-        if (title) return (
-            <div className="text-center text-sm">
-                <span className="tracking-widest">{title.toUpperCase()}</span>
-                <span className='text-xs bg-yellow-700 font-bold rounded text-white p-0.5 m-0.5'>{text}</span>
-            </div>
-        ); else { return null; }
-    }
-                {/*  <div>
-                 <h1 className="flex text-3xl font-bold justify-between items-center">
-                ICC Bulletin {formatDate(thisSunday)}
-                <button className="bg-gray-500 text-white rounded-lg p-1 m-2 font-bold" onClick={() => {
-                    handlePrint(null, () => contentToPrint.current);
-                }}>
-                    PRINT
-                </button>
-            </h1> */}
-
-
+    const ActivitiesScheduleNextWeek = filterDataByDateRange(jsonData, thisSunday, nextSunday);
+    const NumberOfAnnouncements = checkNumberOfAnnouncements(CurrentSundaySchedule, 1, 6);
+    const NumberOfSermonNotes = NumberOfAnnouncements > AnnouncementSplit ? 12 - (NumberOfAnnouncements-AnnouncementSplit) : 13;
     if (!jsonData || !CurrentSundaySchedule) return <div>Loading from Google Sheet Schedule ...</div>;
     return (
-            <div ref={contentToPrint}>
+            <div>
             {/* <!-- Page 1 --> */}
                 <div className="page bg-white border-white  mx-auto p-3 flex overflow-hidden">
-                    <div className="w-1/2 border-r-2 p-1">
+                    <div className="w-1/2 border-r-2 p-1 flex flex-col justify-between">
+                    <div>
                         <img src="/images/SermonNotes.png" className="h-[50px] object-cover" />
-                        {Array.from({ length: 13 }).map((_, index) => (
+                        {Array.from({ length: NumberOfSermonNotes }).map((_, index) => (
                             <div key={index} className="w-full h-10 p-3">
                                 <div key={index} className="w-full border-b-2 h-10 p-3"> &nbsp; </div>
                             </div>
                         ))}
-                        <div className="w-full p-3 mt-8">
+                     { NumberOfAnnouncements > 3 && 
+                        <div className="w-full px-3 mt-5 ">
+                           <div className="font-bold">A N N O U N C E M E N T <small><i>Continued from previous page</i></small></div>
+                           <div className='px-4'> 
+                            <Announcement schedule={CurrentSundaySchedule} indexstart={4} indexend={NumberOfAnnouncements} />
+                            </div>
+                        </div>
+                            }
+                    </div>
+                        <div className="w-full px-3">
                             <div className="w-full h-[120px] bg-gray-500 text-white object-cover z-10 rounded-lg shadow-md shadow-gray-500">
                                 <div className='text-center text-xl tracking-widest bg-white bg-opacity-30'>        G I V E</div>
                                 <div className="items-center p-2 text-center text-sm">
@@ -96,6 +69,7 @@ const Bulletin: React.FC = () => {
                                 </div>
                             </div>
                         </div>
+
                     </div>
                     <div className="w-1/2 p-1">
                         <h1 className='text-lg font-bold text-center'>{thisSunday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</h1>
@@ -160,15 +134,7 @@ const Bulletin: React.FC = () => {
                         </div>
                         <div className="px-6">
                             <ol className="list-decimal text-xs">
-                                {Array.from({ length: 6 }).map((_, index) => { 
-                                    const content = CurrentSundaySchedule[`ANNOUNCEMENT${index + 1}`];
-                                    const englishContent = CurrentSundaySchedule[`ANNOUNCEMENT${index + 1}_ENG`];
-                                    if (content) return (
-                                        <li key={index}>{content}
-                                        {(englishContent) && <><br/><i>{englishContent}</i></>}
-                                        </li> 
-                                    )
-                                } )}
+                            <Announcement schedule={CurrentSundaySchedule} indexstart={1} indexend={3} />
                             </ol>
                         </div>
                     </div>
@@ -179,12 +145,7 @@ const Bulletin: React.FC = () => {
                         </div>
                         <table className="w-full mx-3 mt-2">
                             <tbody>
-                                {Roles.map((key) => (
-                                    <tr key={key}>
-                                        <td className="text-sm w-1/3">{key.replace("_", " ")}</td>
-                                        <td className="text-sm font-bold">{key == "CARETAKER" ? CurrentSundaySchedule["CARETAKER1"] + " & " + CurrentSundaySchedule["CARETAKER2"] : CurrentSundaySchedule[key]}</td>
-                                    </tr>
-                                ))}
+                            <ListRoles Roles={Roles} Schedule={CurrentSundaySchedule} />
                             </tbody>
                         </table>
                         <div className="w-full bg-yellow-800 text-white object-cover z-10 rounded-lg m-1 ">
@@ -192,19 +153,7 @@ const Bulletin: React.FC = () => {
                         </div>
                         <table className="w-full mx-3 mt-2">
                             <tbody>
-                                {Activities.map(function({title,date}) {
-                                var activity = filterDataByDate(jsonData, date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }));
-                                return (
-                                    <tr key={title}>
-                                        <td className="text-sm w-1/3  align-top">{title}</td>
-                                        <td className="text-sm align-top "><b>{formatDate(date,"long")} at {activity["TIME"]} </b>
-                                        <br />at <b>{activity["LOCATION"]} </b> by <b>{activity["ENGLISH_SPEAKER"]}{activity["INDONESIAN_SPEAKER"]}</b>
-
-                                        </td>
-                                    </tr> );
-                                }
-                                
-                                )}
+                            <Activities schedule={ActivitiesScheduleNextWeek} />
                             </tbody>
                         </table>
                         <div className="w-full bg-yellow-900 text-white object-cover z-10 rounded-lg m-1 ">
@@ -212,12 +161,7 @@ const Bulletin: React.FC = () => {
                         </div>
                         <table className="w-full mx-3 mt-2">
                             <tbody>
-                                {Roles.map((key) => (
-                                    <tr key={key}>
-                                        <td className="text-sm w-1/3">{key.replace("_", " ")}</td>
-                                        <td className="text-sm font-bold">{key == "CARETAKER" ? NextSundaySchedule["CARETAKER1"] + " & " + NextSundaySchedule["CARETAKER2"] : NextSundaySchedule[key]}</td>
-                                    </tr>
-                                ))}
+                            <ListRoles Roles={Roles} Schedule={NextSundaySchedule} />
                             </tbody>
                         </table>
                     </div> 
