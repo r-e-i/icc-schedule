@@ -82,7 +82,7 @@ const Bulletin: React.FC = () => {
                         <div className="text-center tracking-widest mt-2">THEMA KHOTBAH / SERMON TITLE</div>
                         <div className="text-center font-bold text-xl">{CurrentSundaySchedule["SERMON_TITLE_IND"]}</div>
                         <div className="text-center italic text-xl -mt-1">{CurrentSundaySchedule["SERMON_TITLE_ENG"]}</div>
-                        <div className="text-center tracking-widest mt-2">PEMBACAAN AKITAB / BIBLE READING </div>
+                        <div className="text-center tracking-widest mt-2">PEMBACAAN ALKITAB / BIBLE READING </div>
                         <div className="text-center font-bold text-xl -mt-1">{CurrentSundaySchedule["VERSE"]}</div>
 
                         <div className="text-center tracking-widest mt-2">PEMBICARA / SPEAKER </div>
