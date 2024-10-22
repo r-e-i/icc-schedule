@@ -176,8 +176,9 @@ const Bulletin: React.FC = () => {
                                 return (
                                     <tr key={title}>
                                         <td className="text-sm w-1/3  align-top">{title}</td>
-                                        <td className="text-sm align-top "><b>{formatDate(date,"long")} at {activity["TIME"]} </b>
-                                        <br />at <b>{activity["LOCATION"]} </b> by <b>{activity["ENGLISH_SPEAKER"]}{activity["INDONESIAN_SPEAKER"]}</b>
+                                        <td className="text-sm align-top ">
+                                            <b>{formatDate(date, "long")} at {activity ? activity["TIME"] : "N/A"} </b>
+                                            <br />at <b>{activity ? activity["LOCATION"] : "N/A"} </b> by <b>{activity ? activity["ENGLISH_SPEAKER"] : "N/A"}{activity ? activity["INDONESIAN_SPEAKER"] : "N/A"}</b>
 
                                         </td>
                                     </tr> );
