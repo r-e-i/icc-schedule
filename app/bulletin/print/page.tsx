@@ -86,7 +86,7 @@ const Bulletin: React.FC = () => {
                         <div className="text-center font-bold text-xl -mt-1">{CurrentSundaySchedule["VERSE"]}</div>
 
                         <div className="text-center tracking-widest mt-2">PEMBICARA / SPEAKER </div>
-                        <div className="text-center font-bold text-xl -mt-1">{CurrentSundaySchedule["INDONESIAN_SPEAKER"]}</div>
+                        <div className="text-center font-bold text-xl -mt-1">{CurrentSundaySchedule["SPEAKER"]}</div>
 
                         <div className="w-full h-[120px] bg-yellow-900 text-white object-cover z-10 rounded-lg shadow-md shadow-gray-500 mt-2">
                             <div className='text-center text-xl tracking-widest bg-white bg-opacity-30 p-1'>        C O N N E C T  &nbsp; W I T H  &nbsp; U S</div>

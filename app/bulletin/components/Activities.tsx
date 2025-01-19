@@ -12,7 +12,7 @@ return (
         <tr key={r.DATE}>
             <td className="text-sm w-1/3  align-top">{r.CHURCH_SERVICE}</td>
             <td className="text-sm align-top "><b>{formatDate(new Date(r.DATE),"long")} at {r.TIME} </b>
-            <br />at <b>{r.LOCATION} </b> by <b>{r.ENGLISH_SPEAKER}{r.INDONESIAN_SPEAKER}</b>
+            <br />at <b>{r.LOCATION} </b> by <b>{r.ENGLISH_SPEAKER}{r.SPEAKER}</b>
 
             </td>
         </tr> );

@@ -4,13 +4,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useReactToPrint } from 'react-to-print';
 import { useRef } from 'react';
+import { formatDate, filterDataByDate, filterDataByDateRange, wT } from '../components/utils';
 
 import { SheetRow } from '@/app/lib/types';
+import Activities from '../components/Activities';
 
-
-const formatDate = (date: Date, length: "long" | "short" = "short"): string => {
-    return date.toLocaleDateString('en-US', { weekday: length, month: length, day: 'numeric', year: 'numeric' });
-};
+// const formatDate = (date: Date, length: "long" | "short" = "short"): string => {
+//     return date.toLocaleDateString('en-US', { weekday: length, month: length, day: 'numeric', year: 'numeric' });
+// };
 
 
 const queryParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
@@ -20,16 +21,15 @@ if (thisSunday.getDay() != 0) {
     thisSunday.setDate(thisSunday.getDate() + (7 - thisSunday.getDay()));
 }
 
-const Activities = [ 
-    { "title": "ENGLISH BIBLE STUDY", "date": new Date(thisSunday.getTime() + 4 * 24 * 60 * 60 * 1000) },
-    { "title": "INDONESIAN BIBLE STUDY", "date": new Date(thisSunday.getTime() + 5 * 24 * 60 * 60 * 1000) },
-]
+// const Activities = [ 
+//     { "title": "ENGLISH BIBLE STUDY", "date": new Date(thisSunday.getTime() + 4 * 24 * 60 * 60 * 1000) },
+//     { "title": "INDONESIAN BIBLE STUDY", "date": new Date(thisSunday.getTime() + 5 * 24 * 60 * 60 * 1000) },
+// ]
 
 const nextSunday = new Date(thisSunday.getTime() + 7 * 24 * 60 * 60 * 1000);
 const SundayDate = formatDate(thisSunday);
 const NextSundayDate = formatDate(nextSunday);
-
-const Roles = ["INDONESIAN_SPEAKER", "ENGLISH_SPEAKER", "LITURGIST", "USHER", "SUNDAY_SCHOOL", "OHP", "SOUND_SYSTEM", "TRANSLATOR", "LUNCH", "CARETAKER"];
+const Roles = ["SPEAKER", "LITURGIST", "USHER", "OHP", "SOUND_SYSTEM", "TRANSLATOR", "LUNCH", "CARETAKER"]; //"ENGLISH_SPEAKER", "SUNDAY_SCHOOL", 
 
 const Bulletin: React.FC = () => {
     const contentToPrint = useRef(null);
@@ -43,7 +43,8 @@ const Bulletin: React.FC = () => {
     const filterDataByDate = (data: SheetRow[], date: string): SheetRow => {
         return data.filter(row => row.DATE == date)[0];
     };
-
+    const ActivitiesScheduleNextWeek = filterDataByDateRange(jsonData, thisSunday, nextSunday);
+    
     useEffect(() => {
         console.log("Fetching data from Google Sheet Schedule ...");
         axios.get('/api/bulletin/schedule').then(res => setJsonData(res.data)).catch(err => { alert(err); console.error(err);});
@@ -92,7 +93,7 @@ const Bulletin: React.FC = () => {
                         <div className="text-center font-bold text-xl -mt-1">{CurrentSundaySchedule["VERSE"]}</div>
 
                         <div className="text-center tracking-widest mt-2">PEMBICARA / SPEAKER </div>
-                        <div className="text-center font-bold text-xl -mt-1">{CurrentSundaySchedule["INDONESIAN_SPEAKER"]}</div>
+                        <div className="text-center font-bold text-xl -mt-1">{CurrentSundaySchedule["SPEAKER"]}</div>
 
                         <div className="w-full h-[120px] bg-yellow-900 text-white object-cover z-10 rounded-lg shadow-md shadow-gray-500 mt-2">
                             <div className='text-center text-xl tracking-widest bg-white bg-opacity-30 p-1'>        C O N N E C T  &nbsp; W I T H  &nbsp; U S</div>
@@ -171,20 +172,7 @@ const Bulletin: React.FC = () => {
                         </div>
                         <table className="w-full mx-3 mt-2">
                             <tbody>
-                                {Activities.map(function({title,date}) {
-                                var activity = filterDataByDate(jsonData, date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }));
-                                return (
-                                    <tr key={title}>
-                                        <td className="text-sm w-1/3  align-top">{title}</td>
-                                        <td className="text-sm align-top ">
-                                            <b>{formatDate(date, "long")} at {activity ? activity["TIME"] : "N/A"} </b>
-                                            <br />at <b>{activity ? activity["LOCATION"] : "N/A"} </b> by <b>{activity ? activity["ENGLISH_SPEAKER"] : "N/A"}{activity ? activity["INDONESIAN_SPEAKER"] : "N/A"}</b>
-
-                                        </td>
-                                    </tr> );
-                                }
-                                
-                                )}
+                            <Activities schedule={ActivitiesScheduleNextWeek} />
                             </tbody>
                         </table>
                         <div className="w-full bg-yellow-900 text-white object-cover z-10 rounded-lg m-1 ">
