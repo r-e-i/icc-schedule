@@ -71,12 +71,12 @@ const Bulletin: React.FC = () => {
                         </div>
 
                     </div>
-                    <div className="w-1/2 p-1">
+                    <div className="w-1/2 pl-3">
                         <h1 className='text-lg font-bold text-center'>{thisSunday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</h1>
                         <div className="flex justify-center -mt-6 -mb-10">
-                            <img className="h-[220px] object-cover z-20 " src="/images/Welcome ICC.png" alt="random" />
+                            <img className="h-[240px] object-cover z-20 " src="/images/Welcome ICC.png" alt="random" />
                         </div>
-                        <img className="w-full h-[220px] object-cover z-10 rounded-lg shadow-lg shadow-gray-500 -mb-6" src={CurrentSundaySchedule["PICTURE"]} alt="MISSING PICTURE - please add picture address / URL to picture column on google sheet" />
+                        <img className="w-full h-[240px] object-cover z-10 rounded-lg shadow-lg shadow-gray-500 -mb-6" src={CurrentSundaySchedule["PICTURE"]} alt="MISSING PICTURE - please add picture address / URL to picture column on google sheet" />
                         <div className='text-center font-bold text-2xl tracking-widest text-white z-40 drop-shadow-xl'>        S U N D A Y &nbsp; S E R V I C E</div>
 
                         <div className="text-center tracking-widest mt-2">THEMA KHOTBAH / SERMON TITLE</div>
