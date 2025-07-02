@@ -35,8 +35,9 @@ export async function GET(request: NextRequest) {
     console.log('Fetching new data at', new Date().toLocaleTimeString());
     const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_RANGE}?key=${GOOGLE_SHEETS_API_KEY}`, { next: { revalidate: 10 } });
     const data = await response.json();    const rows = data.values;
-    const cachedData = convertToJSON(rows);
-    cachedData.filter(row => row.DATE.length > 0);
+    console.log('Data fetched successfully:', rows.length, 'rows');
+    cachedData = convertToJSON(rows);
+    cachedData = cachedData.filter((row: { DATE: string | any[]; }) => row.DATE && row.DATE.length > 0);
     lastFetchTime = currentTime;
     return new Response(JSON.stringify(cachedData), { status: 200 });
   } catch (error) {
@@ -51,9 +52,13 @@ export async function GET(request: NextRequest) {
         const headers = rows[0]; // First row as headers
         return rows.slice(1).map(row => {
             let jsonObject: SheetRow = {};
-            row.forEach((cell, index) => {
-                jsonObject[headers[index]] = cell;
-            });
+            try {
+          row.forEach((cell, index) => {
+              jsonObject[headers[index]] = cell;
+          });
+            } catch (error) {
+          console.error('Error converting row to JSON:', error);
+            }
             return jsonObject;
         });
     };
