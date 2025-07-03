@@ -78,6 +78,7 @@ const Bulletin: React.FC = () => {
                             <Announcement schedule={CurrentSundaySchedule} />
                             # of Announcements: {NumberOfAnnouncements}
                         </div>
+                        r.2
                     </div> 
 
     );
