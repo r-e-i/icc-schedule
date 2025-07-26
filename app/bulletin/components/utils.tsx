@@ -17,11 +17,17 @@ export function formatDate(date: Date, length: "long" | "short" = "short"): stri
     return date.toLocaleDateString('en-US', { weekday: length, month: length, day: 'numeric', year: 'numeric' });
 };
 
-export const wT = (title: string, text: string) => {
-    if (title) return (
-        <div className="text-center text-sm">
-            <span className="tracking-widest">{title.toUpperCase()}</span>
-            <span className='text-xs bg-yellow-700 font-bold rounded text-white p-0.5 m-0.5'>{text}</span>
-        </div>
-    ); else { return null; }
-}
+    export const wT = (title: string, text: string) => {
+        if (title) return (
+            <div className="text-center text-sm">
+                <span className="tracking-widest">{title.toUpperCase()}</span>
+                <span
+                    className={`text-xs font-bold rounded text-white p-0.5 m-0.5 ${
+                        text.toLowerCase() === "duduk" ? "bg-gray-700" : "bg-yellow-700"
+                    }`}
+                >
+                    {text}
+                </span>
+            </div>
+        ); else { return null; }
+    }

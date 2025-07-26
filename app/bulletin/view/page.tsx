@@ -53,20 +53,6 @@ const Bulletin: React.FC = () => {
     const CurrentSundaySchedule = filterDataByDate(jsonData, SundayDate);
     const NextSundaySchedule = filterDataByDate(jsonData, NextSundayDate);
 
-    const wT = (title: string, text: string) => {
-        if (title) return (
-            <div className="text-center text-sm">
-                <span className="tracking-widest">{title.toUpperCase()}</span>
-                <span
-                    className={`text-xs font-bold rounded text-white p-0.5 m-0.5 ${
-                        text.toLowerCase() === "duduk" ? "bg-gray-700" : "bg-yellow-700"
-                    }`}
-                >
-                    {text}
-                </span>
-            </div>
-        ); else { return null; }
-    }
                 {/*  <div>
                  <h1 className="flex text-3xl font-bold justify-between items-center">
                 ICC Bulletin {formatDate(thisSunday)}
