@@ -123,7 +123,7 @@ const Bulletin: React.FC = () => {
                             <div className="font-bold -mb-3">{CurrentSundaySchedule["VERSE"]}</div>
                             <p className="italic mx-10 -mt-1">{CurrentSundaySchedule["SERMON_TITLE_IND"]}</p>
                             {wT("Lagu Pujian", "BERDIRI")}
-                            {wT("Khotbah", "SIT")}
+                            {wT("Khotbah", "DUDUK")}
                             {wT("Lagu Doksologi", "BERDIRI")}
                             {wT("Doa Berkat", "BERDIRI")}
                             {wT("Lagu Amin", "BERDIRI")}
