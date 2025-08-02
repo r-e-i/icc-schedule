@@ -19,11 +19,11 @@ export function formatDate(date: Date, length: "long" | "short" = "short"): stri
 
     export const wT = (title: string, text: string) => {
         if (title) return (
-            <div className="text-center text-sm font-semibold">
-                <span className="tracking-widest">{title.toUpperCase()}</span>
+            <div className="text-center text-sm font-bold">
+                <span className="tracking-widest mr-4">{title.toUpperCase()}</span>
                 <span
-                    className={`text-xs font-bold rounded text-white p-0.5 m-0.5 ${
-                        text.toLowerCase() === "duduk" ? "bg-gray-700" : "bg-yellow-700"
+                    className={`text-xs font-bold rounded px-1 m-0.5 ${
+                        text.toLowerCase() === "duduk" ? "bg-gray-700  text-white" : "bg-gray-200  text-black"
                     }`}
                 >
                     {text}

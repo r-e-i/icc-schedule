@@ -111,8 +111,8 @@ const Bulletin: React.FC = () => {
                             {wT("Doa Teduh", "DUDUK")}
                             {wT("Panggilan Beribadah", "BERDIRI")}
                             <div className='px-1'>
-                                <b className="-mt-2">{CurrentSundaySchedule["WORSHIP_VERSE"]}</b>
-                                <p className="text-xs italic mx-10 -mt-1 mb-2">{CurrentSundaySchedule["WORSHIP_VERSE_TEXT"]}</p>
+                                <b className="-mt-2 font-bold">{CurrentSundaySchedule["WORSHIP_VERSE"]}</b>
+                                <p className="mx-2 -mt-1 mb-2">{CurrentSundaySchedule["WORSHIP_VERSE_TEXT"]}</p>
                             </div>
                             {wT("Lagu Pujian", "BERDIRI")}
                             {wT("Doa Pembukaan", "BERDIRI")}
@@ -120,8 +120,8 @@ const Bulletin: React.FC = () => {
                             {wT(CurrentSundaySchedule["READING"], "BERDIRI")}
                             <i>Anak anak sekolah minggu dipersilakan masuk ke kelasnya masing masing</i>
                             {wT("Bible Reading", "BERDIRI")}
-                            <div className="font-bold -mb-3">{CurrentSundaySchedule["VERSE"]}</div>
-                            <p className="italic mx-10 -mt-1">{CurrentSundaySchedule["SERMON_TITLE_IND"]}</p>
+                            <div className="-mb-3"><span className="font-bold">{CurrentSundaySchedule["VERSE"]} </span> - <i>{CurrentSundaySchedule["SERMON_TITLE_IND"]}</i></div>
+                            {/* <p className="mx-10 -mt-1">{CurrentSundaySchedule["SERMON_TITLE_IND"]}</p> */}
                             {wT("Lagu Pujian Sebelum Firman", "BERDIRI")}
                             {wT("Khotbah", "DUDUK")}
                             {wT("Lagu Persembahan", "BERDIRI")}
@@ -133,8 +133,8 @@ const Bulletin: React.FC = () => {
                         <div className="flex justify-center">
                             <img className="h-[70px] object-cover" src="/images/Announcement.png" />
                         </div>
-                        <div className="px-6">
-                            <ol className="list-decimal text-xs">
+                        <div className="px-2">
+                            <ol className="list-decimal">
                             <Announcement schedule={CurrentSundaySchedule} indexstart={1} indexend={3} />
                             </ol>
                         </div>

@@ -13,7 +13,7 @@ export default function Announcement(p: props)
     const end = p.indexend || 6;
     return (
         <>
-        <ol className="list-decimal text-xs" start={start}>
+        <ol className="list-decimal text-sm" start={start}>
         {Array.from({ length: end - start + 1 }).map((_, index) => { 
             const content = p.schedule[`ANNOUNCEMENT${index + start}`];
             const englishContent = p.schedule[`ANNOUNCEMENT${index + start}_ENG`];
