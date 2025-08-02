@@ -111,8 +111,11 @@ const Bulletin: React.FC = () => {
                             {wT("Doa Teduh", "DUDUK")}
                             {wT("Panggilan Beribadah", "BERDIRI")}
                             <div className='px-1'>
-                                <b className="-mt-2 font-bold">{CurrentSundaySchedule["WORSHIP_VERSE"]}</b>
-                                <p className="mx-2 -mt-1 mb-2">{CurrentSundaySchedule["WORSHIP_VERSE_TEXT"]}</p>
+                            
+                                <p className="mx-2 -mt-1 mb-2 " style={{ lineHeight: "1.3em" }}>
+                                        <b className="m-1">{CurrentSundaySchedule["WORSHIP_VERSE"]?.toUpperCase()} - </b>
+                                    <i>{CurrentSundaySchedule["WORSHIP_VERSE_TEXT"]}</i>
+                                </p>
                             </div>
                             {wT("Lagu Pujian", "BERDIRI")}
                             {wT("Doa Pembukaan", "BERDIRI")}
