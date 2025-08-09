@@ -63,7 +63,7 @@ const Bulletin: React.FC = () => {
                             <div className="w-full h-[120px] bg-gray-500 text-white object-cover z-10 rounded-lg shadow-md shadow-gray-500">
                                 <div className='text-center text-xl tracking-widest bg-white bg-opacity-30'>       P E R S E M B A H A N</div>
                                 <div className="items-center p-2 text-center text-sm">
-Jemaat bisa memberikan persembahan dalam Bentuk cash atau Check (payable to Immanuel community Church) dengan memasukan ke drop box yg sudah tersedia atau kantong persembahan.
+Jemaat bisa memberikan persembahan dalam bentuk cash atau check (payable to <b>Immanuel community Church</b>) dengan memasukan ke drop box yg sudah tersedia atau kantong persembahan.
                                 </div>
                             </div>
                         </div>
