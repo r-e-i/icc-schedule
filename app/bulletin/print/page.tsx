@@ -63,9 +63,7 @@ const Bulletin: React.FC = () => {
                             <div className="w-full h-[120px] bg-gray-500 text-white object-cover z-10 rounded-lg shadow-md shadow-gray-500">
                                 <div className='text-center text-xl tracking-widest bg-white bg-opacity-30'>       P E R S E M B A H A N</div>
                                 <div className="items-center p-2 text-center text-sm">
-                                    Jemaat bisa memberikan persembahan: <br>
-                                    </br>1. Menulis Drop Box yang sudah tersedia. 
-                                    <br></br>2. Menulis cek yang ditunjukan kepada : <b>Immanuel Community Church in Fresno.</b>. Mohon ditulis secara lengkap. 
+Jemaat bisa memberikan persembahan dalam Bentuk cash atau Check (payable to Immanuel community Church) dengan memasukan ke drop box yg sudah tersedia atau kantong persembahan.
                                 </div>
                             </div>
                         </div>
@@ -120,13 +118,16 @@ const Bulletin: React.FC = () => {
                             {wT("Lagu Pujian", "BERDIRI")}
                             {wT("Doa Pembukaan", "BERDIRI")}
                             {wT("Lagu Pujian", "DUDUK")}
-                            {wT(CurrentSundaySchedule["READING"], "BERDIRI")}
-                            <i>Anak anak sekolah minggu dipersilakan masuk ke kelasnya masing masing</i>
+
+                            {CurrentSundaySchedule["READING"]?.toLowerCase() !== "perjamuan kudus" && wT(CurrentSundaySchedule["READING"], "BERDIRI")}
+                            {/* <i>Anak anak sekolah minggu dipersilakan masuk ke kelasnya masing masing</i> */}
                             {wT("Bible Reading", "BERDIRI")}
                             <div className="-mb-3"><span className="font-bold">{CurrentSundaySchedule["VERSE"]} </span> - <i>{CurrentSundaySchedule["SERMON_TITLE_IND"]}</i></div>
                             {/* <p className="mx-10 -mt-1">{CurrentSundaySchedule["SERMON_TITLE_IND"]}</p> */}
                             {wT("Lagu Pujian Sebelum Firman", "BERDIRI")}
                             {wT("Khotbah", "DUDUK")}
+                            {/* Communion after sermon */}
+                            {CurrentSundaySchedule["READING"]?.toLowerCase() === "perjamuan kudus"&& wT(CurrentSundaySchedule["READING"], "BERDIRI")}
                             {wT("Lagu Persembahan", "BERDIRI")}
                             {wT("Lagu Doksologi", "BERDIRI")}
                             {wT("Doa Berkat", "BERDIRI")}
