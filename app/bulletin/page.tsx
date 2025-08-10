@@ -143,7 +143,12 @@ const Bulletin: React.FC = () => {
 
                 {/* Footer */}
                 <div className="text-center text-gray-400 text-sm mt-8">
-                    Version r.2
+                    <div className="mb-2">Version r.2</div>
+                    <div className="space-y-1">
+                        <div>Build Date: {process.env.NEXT_PUBLIC_BUILD_DATE || new Date().toISOString().split('T')[0]}</div>
+                        <div>Commit: {process.env.NEXT_PUBLIC_COMMIT_SHA?.substring(0, 7) || "unknown"}</div>
+                        <div>Commit Date: {process.env.NEXT_PUBLIC_COMMIT_DATE || "unknown"}</div>
+                    </div>
                 </div>
             </div>
         </div>

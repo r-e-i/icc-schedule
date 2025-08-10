@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "next build",
+    "build": "NEXT_PUBLIC_BUILD_DATE=$(date -u +%Y-%m-%d) NEXT_PUBLIC_COMMIT_SHA=$(git rev-parse HEAD) NEXT_PUBLIC_COMMIT_DATE=$(git log -1 --format=%cd --date=short) next build",
     "start": "next start",
     "lint": "next lint"
   },
