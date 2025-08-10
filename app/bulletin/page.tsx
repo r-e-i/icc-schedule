@@ -36,74 +36,157 @@ const Bulletin: React.FC = () => {
     const ActivitiesSchedule = filterDataByDateRange(jsonData, lastMonday, thisSunday);
     const ActivitiesScheduleNextWeek = filterDataByDateRange(jsonData, thisSunday, nextSunday);
     const NumberOfAnnouncements = checkNumberOfAnnouncements(CurrentSundaySchedule, 1, 6);
-    if (!jsonData || !CurrentSundaySchedule) return <div>Loading from Google Sheet Schedule ...</div>;
+    
+    if (!jsonData || !CurrentSundaySchedule) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center space-x-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    <span className="text-gray-700 font-medium">Loading from Google Sheet Schedule...</span>
+                </div>
+            </div>
+        );
+    }
+    
     return (
-            <div className="p-2">
-                <div className="flex font-bold items-center space-x-2">
-                {HeaderButton(thisSunday, setThisSunday)}
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+            <div className="container mx-auto px-4 py-8 max-w-4xl">
+                {/* Header Controls */}
+                <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                    <div className="flex flex-wrap gap-4 items-center justify-center">
+                        {HeaderButton(thisSunday, setThisSunday)}
+                    </div>
                 </div>
 
-                        <Title><b>IMMANUEL COMMUNITY CHURCH OF FRESNO SCHEDULE </b><br/> {formatDate(lastMonday,"long")} - {formatDate(nextSunday,"long")} </Title>
-                        <Title><div>ACTIVITIES</div></Title>
-                        <table className="w-full mx-3 mt-2">
+                {/* Main Title */}
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-800 mb-2">
+                        IMMANUEL COMMUNITY CHURCH                         OF FRESNO SCHEDULE
+                    </h1>
+                    <p className="text-lg text-gray-600 bg-white rounded-full px-6 py-2 inline-block shadow-md">
+                        {formatDate(lastMonday,"long")} - {formatDate(nextSunday,"long")}
+                    </p>
+                </div>
+
+                {/* Activities Section */}
+                <div className="bg-white rounded-2xl shadow-lg mb-8 overflow-hidden">
+                    <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white p-4">
+                        <h3 className="text-xl font-bold text-center tracking-wide">ACTIVITIES</h3>
+                    </div>
+                    <div className="p-6">
+                        <table className="w-full">
                             <tbody>
                                 <Activities schedule={ActivitiesSchedule} />
                             </tbody>
                         </table>
-                        <Title><div>SUNDAY SERVICE {formatDate(thisSunday,"long")}</div></Title>
-                        <table className="w-full mx-3 mt-2">
+                    </div>
+                </div>
+
+                {/* Sunday Service Section */}
+                <div className="bg-white rounded-2xl shadow-lg mb-8 overflow-hidden">
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4">
+                        <h3 className="text-xl font-bold text-center tracking-wide">
+                            SUNDAY SERVICE - {formatDate(thisSunday,"long")}
+                        </h3>
+                    </div>
+                    <div className="p-6">
+                        <table className="w-full">
                             <tbody>
                                 <ListRoles Roles={Roles} Schedule={CurrentSundaySchedule} />
                             </tbody>
                         </table>
-                        <div className="w-full bg-yellow-800 text-white object-cover z-10 rounded-lg m-1 ">
-                            <div className='text-center text-xl tracking-widest bg-white bg-opacity-30'>  <b> ACTIVITIES </b> </div>
-                        </div>
-                        <table className="w-full mx-3 mt-2">
+                    </div>
+                </div>
+
+                {/* Next Week Activities */}
+                <div className="bg-white rounded-2xl shadow-lg mb-8 overflow-hidden">
+                    <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white p-4">
+                        <h3 className="text-xl font-bold text-center tracking-wide">NEXT WEEK ACTIVITIES</h3>
+                    </div>
+                    <div className="p-6">
+                        <table className="w-full">
                             <tbody>
                                 <Activities schedule={ActivitiesScheduleNextWeek} />
                             </tbody>
                         </table>
-<Title> <b> NEXT WEEK </b> | <small>{nextSunday.toLocaleDateString('en-US', { weekday:'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()} at 10:30 AM</small>
-</Title> 
-                       <table className="w-full mx-3 mt-2">
+                    </div>
+                </div>
+
+                {/* Next Week Service */}
+                <div className="bg-white rounded-2xl shadow-lg mb-8 overflow-hidden">
+                    <div className="bg-gradient-to-r from-orange-500 to-red-600 text-white p-4">
+                        <h3 className="text-xl font-bold text-center tracking-wide">
+                            NEXT WEEK - {nextSunday.toLocaleDateString('en-US', { weekday:'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()} at 10:30 AM
+                        </h3>
+                    </div>
+                    <div className="p-6">
+                        <table className="w-full">
                             <tbody>
                                 <ListRoles Roles={Roles} Schedule={NextSundaySchedule} />
                             </tbody>
                         </table>
-                        <div className="w-full bg-yellow-900 text-white object-cover z-10 rounded-lg m-1 ">
-                            <div className='text-center text-lg tracking-widest bg-white bg-opacity-30'>  <b> ANNOUNCEMENT </b></div>
-                        </div>
-                        <div className="px-6">
-                            <Announcement schedule={CurrentSundaySchedule} />
-                            # of Announcements: {NumberOfAnnouncements}
-                        </div>
-                        r.2
-                    </div> 
+                    </div>
+                </div>
 
+                {/* Announcements Section */}
+                <div className="bg-white rounded-2xl shadow-lg mb-8 overflow-hidden">
+                    <div className="bg-gradient-to-r from-yellow-500 to-amber-600 text-white p-4">
+                        <h3 className="text-xl font-bold text-center tracking-wide">ANNOUNCEMENTS</h3>
+                    </div>
+                    <div className="p-6">
+                        <Announcement schedule={CurrentSundaySchedule} />
+                        <div className="mt-4 text-sm text-gray-500 text-center">
+                            Number of Announcements: {NumberOfAnnouncements}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="text-center text-gray-400 text-sm mt-8">
+                    Version r.2
+                </div>
+            </div>
+        </div>
     );
 };
 
-function HeaderButton(date: Date, setThisSunday: (date: Date) => void)
-{
-    return ( <>
-    <button className="bg-gray-500 text-white rounded-lg p-2 m-1 font-bold drop-shadow-lg hover:bg-red-900" onClick={() => {
-        if (typeof window !== 'undefined') {
-            window.location.href = "./bulletin/view?date=" + date.toISOString();
-        }
-    }}>
-        VIEW BULLETIN
-    </button>
-    <button className="bg-gray-500 text-white rounded-lg p-2 m-1 font-bold drop-shadow-lg hover:bg-red-900" onClick={() => {
-        if (typeof window !== 'undefined') {
-            window.location.href = "./bulletin/print?date=" + date.toISOString();
-        }
-    }}>
-        PRINT BULLETIN
-    </button>
-    <div className=' bg-gray-500  text-white rounded-lg p-1.5 m-2 font-bold '>
-    DATE <input className="w-[120px] text-black rounded-lg items-center font-bold" type="date" name="date" defaultValue={date.toLocaleDateString()}  onChange={e => setThisSunday(new Date(e.target.value))}/>
-    </div>
-    </>);
+function HeaderButton(date: Date, setThisSunday: (date: Date) => void) {
+    return (
+        <>
+            <button 
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 py-3 font-semibold shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl"
+                onClick={() => {
+                    if (typeof window !== 'undefined') {
+                        window.location.href = "./bulletin/view?date=" + date.toISOString();
+                    }
+                }}
+            >
+                📋 VIEW BULLETIN
+            </button>
+            
+            <button 
+                className="bg-green-600 hover:bg-green-700 text-white rounded-xl px-6 py-3 font-semibold shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl"
+                onClick={() => {
+                    if (typeof window !== 'undefined') {
+                        window.location.href = "./bulletin/print?date=" + date.toISOString();
+                    }
+                }}
+            >
+                🖨️ PRINT BULLETIN
+            </button>
+            
+            <div className="bg-gray-700 text-white rounded-xl px-4 py-3 font-semibold shadow-lg flex items-center space-x-3">
+                <span className="text-sm font-medium text-white">📅 DATE</span>
+                <input 
+                    className="w-36 text-gray-800 bg-white rounded-lg px-3 py-1 font-medium border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors duration-200" 
+                    type="date" 
+                    name="date" 
+                    defaultValue={date.toISOString().split('T')[0]}  
+                    onChange={e => setThisSunday(new Date(e.target.value))}
+                />
+            </div>
+        </>
+    );
 }
+
 export default Bulletin;
