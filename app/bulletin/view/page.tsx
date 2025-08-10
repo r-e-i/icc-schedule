@@ -44,36 +44,8 @@ const Bulletin: React.FC = () => {
             <div className="max-w-7xl mx-auto p-4">
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
                     <div className="flex flex-col lg:flex-row">
-                        {/* Sermon Notes Section - First on mobile, left on desktop */}
-                        <div className="w-full lg:w-1/2 lg:border-r-2 p-4 lg:p-6 flex flex-col justify-between order-2 lg:order-1">
-                            <div>
-                                <img src="/images/SermonNotes.png" className="h-[50px] object-cover mb-4" />
-                                {Array.from({ length: NumberOfSermonNotes }).map((_, index) => (
-                                    <div key={index} className="w-full h-10 p-3">
-                                        <div key={index} className="w-full border-b-2 h-10 p-3"> &nbsp; </div>
-                                    </div>
-                                ))}
-                                { NumberOfAnnouncements > 3 && 
-                                    <div className="w-full px-3 mt-5">
-                                       <div className="font-bold">P E N G U M U M A N <small><i>Dari Halaman Sebelumnya</i></small></div>
-                                       <div className='px-4'> 
-                                        <Announcement schedule={CurrentSundaySchedule} indexstart={4} indexend={NumberOfAnnouncements} />
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                            <div className="w-full px-3 mt-4">
-                                <div className="w-full h-[120px] bg-gray-500 text-white object-cover z-10 rounded-lg shadow-md shadow-gray-500">
-                                    <div className='text-center text-xl tracking-widest bg-white bg-opacity-30'>P E R S E M B A H A N</div>
-                                    <div className="items-center p-2 text-center text-sm">
-                                        Jemaat bisa memberikan persembahan dalam bentuk cash atau check (payable to <b>Immanuel community Church</b>) dengan memasukan ke drop box yg sudah tersedia atau kantong persembahan.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Main Service Info Section - First on desktop, second on mobile */}
-                        <div className="w-full lg:w-1/2 p-4 lg:p-6 order-1 lg:order-2">
+                        {/* Main Service Info Section - First section */}
+                        <div className="w-full p-4 lg:p-6">
                             <h1 className='text-lg lg:text-xl font-bold text-center mb-4'>{thisSunday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</h1>
                             <div className="flex justify-center -mt-6 -mb-10">
                                 <img className="h-[200px] lg:h-[240px] object-cover z-20" src="/images/Welcome ICC.png" alt="Welcome ICC" />
@@ -189,6 +161,24 @@ const Bulletin: React.FC = () => {
                                         <ListRoles Roles={Roles} Schedule={NextSundaySchedule} />
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Sermon Notes Section - Moved to last */}
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div className="flex flex-col lg:flex-row">
+                        {/* Sermon Notes */}
+                        <div className="w-full lg:w-1/2 lg:border-r-2 p-4 lg:p-6 flex flex-col justify-between">
+                            
+                            <div className="w-full">
+                                <div className="w-full h-[120px] bg-gray-500 text-white object-cover z-10 rounded-lg shadow-md shadow-gray-500">
+                                    <div className='text-center text-xl tracking-widest bg-white bg-opacity-30'>P E R S E M B A H A N</div>
+                                    <div className="items-center p-2 text-center text-sm">
+                                        Jemaat bisa memberikan persembahan dalam bentuk cash atau check (payable to <b>Immanuel community Church</b>) dengan memasukan ke drop box yg sudah tersedia atau kantong persembahan.
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

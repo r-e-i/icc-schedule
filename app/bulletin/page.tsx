@@ -39,9 +39,9 @@ const Bulletin: React.FC = () => {
     
     if (!jsonData || !CurrentSundaySchedule) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
                 <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center space-x-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
                     <span className="text-gray-700 font-medium">Loading from Google Sheet Schedule...</span>
                 </div>
             </div>
@@ -49,7 +49,7 @@ const Bulletin: React.FC = () => {
     }
     
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
             <div className="container mx-auto px-4 py-8 max-w-4xl">
                 {/* Header Controls */}
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
