@@ -68,7 +68,7 @@ const Bulletin: React.FC = () => {
                                 <div className="flex flex-col sm:flex-row justify-between items-center p-4 gap-4">
                                     <div className='text-sm font-bold text-center sm:text-left'>4141 N MILLBROOK AVE<br />FRESNO, CA 93726<br />(559)500-8220</div>
                                     <div className='text-center text-sm font-bold'>http://iccfresno.org</div>
-                                    <div className='text-sm text-center sm:text-right'>ZOOM ID <b>559 123 4567</b><br />PASSWORD <b>4141</b></div>
+                                    <div className='text-sm text-center sm:text-right'>ZOOM ID <b>559 123 4567</b></div>
                                 </div>
                             </div>
                         </div>
