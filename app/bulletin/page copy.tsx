@@ -48,9 +48,8 @@ const GoogleSheetDataToJson: React.FC = () => {
 
     const handlePrint = useReactToPrint({
         documentTitle: "ICC Bulletin",
-        onBeforePrint: () => console.log("before printing..."),
+        onBeforePrint: async () => console.log("before printing..."),
         onAfterPrint: () => console.log("after printing..."),
-        removeAfterPrint: true,
     });
     // Function to filter data by DATE field
     const filterDataByDate = (data: SheetRow[], date: string): SheetRow => {
