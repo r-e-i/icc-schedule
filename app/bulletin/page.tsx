@@ -14,12 +14,26 @@ import Announcement, { checkNumberOfAnnouncements } from './components/Announcem
 const Bulletin: React.FC = () => {
     const queryParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const queryDate = queryParams?.get('date');
-    const [jsonData, setJsonData] = useState<SheetRow[]>([]);
+    const [jsonData, setJsonData] = useState<SheetRow[] | null>(null);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [thisSunday, setThisSunday] = useState<Date>(queryDate ? new Date(queryDate) : new Date());
 //Fetch Data
     useEffect(() => {
         console.log("Fetching data from Google Sheet Schedule ...");
-        axios.get('/api/bulletin/schedule').then(res => setJsonData(res.data)).catch(err => { alert(err); console.error(err);});
+        axios.get<SheetRow[]>('/api/bulletin/schedule')
+            .then(res => {
+                if (!Array.isArray(res.data)) {
+                    throw new Error('Schedule API did not return a list of rows');
+                }
+                setJsonData(res.data);
+            })
+            .catch(err => {
+                const message = axios.isAxiosError(err)
+                    ? err.response?.data?.error || err.message
+                    : err instanceof Error ? err.message : 'Unknown schedule loading error';
+                setLoadError(message);
+                console.error(err);
+            });
     }, []);
 //Set to this Sunday
     if (thisSunday.getDay() != 0) {
@@ -31,18 +45,41 @@ const Bulletin: React.FC = () => {
     const SundayDate = formatDate(thisSunday);
     const NextSundayDate = formatDate(nextSunday);
 //SCHEDULES
-    const CurrentSundaySchedule = filterDataByDate(jsonData, SundayDate);
-    const NextSundaySchedule = filterDataByDate(jsonData, NextSundayDate);
-    const ActivitiesSchedule = filterDataByDateRange(jsonData, lastMonday, thisSunday);
-    const ActivitiesScheduleNextWeek = filterDataByDateRange(jsonData, thisSunday, nextSunday);
+    const scheduleRows = jsonData ?? [];
+    const CurrentSundaySchedule = filterDataByDate(scheduleRows, SundayDate);
+    const NextSundaySchedule = filterDataByDate(scheduleRows, NextSundayDate);
+    const ActivitiesSchedule = filterDataByDateRange(scheduleRows, lastMonday, thisSunday);
+    const ActivitiesScheduleNextWeek = filterDataByDateRange(scheduleRows, thisSunday, nextSunday);
     const NumberOfAnnouncements = checkNumberOfAnnouncements(CurrentSundaySchedule, 1, 6);
     
-    if (!jsonData || !CurrentSundaySchedule) {
+    if (loadError) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center p-6">
+                <div className="bg-white rounded-2xl shadow-xl p-8 max-w-xl">
+                    <h1 className="text-xl font-bold text-red-700 mb-2">Unable to load Google Sheet schedule</h1>
+                    <p className="text-gray-700">{loadError}</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (jsonData === null) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
                 <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center space-x-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
                     <span className="text-gray-700 font-medium">Loading from Google Sheet Schedule...</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (!CurrentSundaySchedule) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center p-6">
+                <div className="bg-white rounded-2xl shadow-xl p-8 max-w-xl">
+                    <h1 className="text-xl font-bold text-amber-700 mb-2">No schedule found</h1>
+                    <p className="text-gray-700">Loaded {jsonData.length} rows from Google Sheet, but none matched {SundayDate}.</p>
                 </div>
             </div>
         );

@@ -15,12 +15,26 @@ import Announcement, { checkNumberOfAnnouncements } from '../components/Announce
 const Bulletin: React.FC = () => {
     const queryParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const queryDate = queryParams?.get('date');
-    const [jsonData, setJsonData] = useState<SheetRow[]>([]);
+    const [jsonData, setJsonData] = useState<SheetRow[] | null>(null);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [thisSunday, setThisSunday] = useState<Date>(queryDate ? new Date(queryDate) : new Date());
 //Fetch Data
     useEffect(() => {
         console.log("Fetching data from Google Sheet Schedule ...");
-        axios.get('/api/bulletin/schedule').then(res => setJsonData(res.data)).catch(err => { alert(err); console.error(err);});
+        axios.get<SheetRow[]>('/api/bulletin/schedule')
+            .then(res => {
+                if (!Array.isArray(res.data)) {
+                    throw new Error('Schedule API did not return a list of rows');
+                }
+                setJsonData(res.data);
+            })
+            .catch(err => {
+                const message = axios.isAxiosError(err)
+                    ? err.response?.data?.error || err.message
+                    : err instanceof Error ? err.message : 'Unknown schedule loading error';
+                setLoadError(message);
+                console.error(err);
+            });
     }, []);
 //Set to this Sunday
     if (thisSunday.getDay() != 0) {
@@ -31,13 +45,16 @@ const Bulletin: React.FC = () => {
     const SundayDate = formatDate(thisSunday);
     const NextSundayDate = formatDate(nextSunday);
 //SCHEDULES
-    const CurrentSundaySchedule = filterDataByDate(jsonData, SundayDate);
-    const NextSundaySchedule = filterDataByDate(jsonData, NextSundayDate);
-    const ActivitiesScheduleNextWeek = filterDataByDateRange(jsonData, thisSunday, nextSunday);
+    const scheduleRows = jsonData ?? [];
+    const CurrentSundaySchedule = filterDataByDate(scheduleRows, SundayDate);
+    const NextSundaySchedule = filterDataByDate(scheduleRows, NextSundayDate);
+    const ActivitiesScheduleNextWeek = filterDataByDateRange(scheduleRows, thisSunday, nextSunday);
     const NumberOfAnnouncements = checkNumberOfAnnouncements(CurrentSundaySchedule, 1, 6);
     const NumberOfSermonNotes = NumberOfAnnouncements > AnnouncementSplit ? 12 - (NumberOfAnnouncements-AnnouncementSplit) : 13;
 
-    if (!jsonData || !CurrentSundaySchedule) return <div>Loading from Google Sheet Schedule ...</div>;
+    if (loadError) return <div>Unable to load Google Sheet schedule: {loadError}</div>;
+    if (jsonData === null) return <div>Loading from Google Sheet Schedule ...</div>;
+    if (!CurrentSundaySchedule) return <div>No schedule found for {SundayDate}. Loaded {jsonData.length} rows from Google Sheet.</div>;
     return (
         <div className="min-h-screen bg-gray-50">
             {/* <!-- Page 1 --> */}
